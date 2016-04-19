@@ -147,6 +147,9 @@ func burrowMain() int {
 	}
 	defer appContext.Storage.Stop()
 
+	// Start lag monitor
+	defer NewLagMonitor(appContext).Close()
+
 	// Start an HTTP server
 	log.Info("Starting HTTP server")
 	appContext.Server, err = NewHttpServer(appContext)

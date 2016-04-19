@@ -92,8 +92,24 @@ func NewClusterLagMonitor(cluster, group string, context *ApplicationContext) *C
 				clm.app.Storage.requestChannel <- storageRequest
 				result := <-storageRequest.Result
 				if result.Status != StatusOK {
-					jStr, _ := json.Marshal(result)
-					log.Warnf("%s", jStr)
+					for _, PartStatus := range result.Partitions {
+						if PartStatus.Status != StatusOK {
+							strStart, _ := json.Marshal(PartStatus.Start)
+							strEnd, _ := json.Marshal(PartStatus.End)
+							log.Warnf("WrongStatus: cluster=%s group=%s topic=%s partition=%d status=%s start=%s end=%s",
+								result.Cluster, result.Group, PartStatus.Topic, PartStatus.Partition, PartStatus.Status,
+								strStart, strEnd)
+						}
+					}
+				}
+
+				totalInfo := make(map[string]int64)
+				for _, PartStatus := range result.Partitions {
+					totalInfo[PartStatus.Topic] = totalInfo[PartStatus.Topic] + PartStatus.End.Lag
+				}
+				for topic, lag := range totalInfo {
+					log.Infof("TotalInfo: cluster=%s group=%s topic=%s lags=%d",
+						result.Cluster, result.Group, topic, lag)
 				}
 			}
 		}
