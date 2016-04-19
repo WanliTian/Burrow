@@ -38,7 +38,7 @@ func NewLagMonitor(context *ApplicationContext) *LagMonitor {
 	}
 
 	go func() {
-		tick := time.NewTimer(30 * time.Second)
+		tick := time.NewTimer(3 * time.Minute)
 		for {
 			select {
 			case <-lm.closec:
@@ -60,7 +60,7 @@ func NewLagMonitor(context *ApplicationContext) *LagMonitor {
 						lm.groups[cluster] = newGroups
 					}
 				}
-				tick.Reset(30 * time.Second)
+				tick.Reset(3 * time.Minute)
 			}
 		}
 	}()
