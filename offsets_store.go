@@ -326,13 +326,13 @@ func (storage *OffsetStorage) addConsumerOffset(offset *PartitionOffset) {
 		}
 
 		// Prevent new commits that are too fast (less than the min-distance config) if the last offset was not artificial
-		if (!lastOffset.artificial) && (timestampDifference >= 0) && (timestampDifference < (storage.app.Config.Lagcheck.MinDistance * 1000)) {
-			clusterOffsets.consumerLock.Unlock()
-			log.Debugf("Dropped offset (mindistance): cluster=%s topic=%s partition=%v group=%s timestamp=%v offset=%v tsdiff=%v lag=%v",
-				offset.Cluster, offset.Topic, offset.Partition, offset.Group, offset.Timestamp, offset.Offset,
-				timestampDifference, brokerOffset-offset.Offset)
-			return
-		}
+		//if (!lastOffset.artificial) && (timestampDifference >= 0) && (timestampDifference < (storage.app.Config.Lagcheck.MinDistance * 1000)) {
+		//	clusterOffsets.consumerLock.Unlock()
+		//	log.Debugf("Dropped offset (mindistance): cluster=%s topic=%s partition=%v group=%s timestamp=%v offset=%v tsdiff=%v lag=%v",
+		//		offset.Cluster, offset.Topic, offset.Partition, offset.Group, offset.Timestamp, offset.Offset,
+		//		timestampDifference, brokerOffset-offset.Offset)
+		//	return
+		//}
 	}
 
 	// Calculate the lag against the brokerOffset
